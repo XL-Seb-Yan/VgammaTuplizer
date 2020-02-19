@@ -21,12 +21,12 @@ import FWCore.ParameterSet.VarParsing as VarParsing
 
 options = VarParsing.VarParsing ('analysis')
 
-options.maxEvents = 50
+options.maxEvents = -1
 
 #data file
 
 
-options.inputFiles = ('51E.root')
+options.inputFiles = ('FCF738.root')
 
 #options.inputFiles = ('root://cmseos.fnal.gov//store/user/jhakala/WGamma_M1600_W0.05_v2/WGamma-M1600_W0.05_miniAOD_0.root')
 
@@ -84,8 +84,8 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 from Configuration.AlCa.GlobalTag import GlobalTag
 
 GT = ''
-if config["RUNONMC"]: GT = '94X_mc2017_realistic_v14'
-elif config["RUNONReReco"]: GT = '94X_dataRun2_v6'
+if config["RUNONMC"]: GT = '94X_mcRun2_asymptotic_v3'
+elif config["RUNONReReco"]: GT = '94X_dataRun2_v10'
 elif config["RUNONPromptReco"]: GT = '92X_dataRun2_2017Prompt_v11'
 
 print "*************************************** GLOBAL TAG *************************************************" 
@@ -94,7 +94,10 @@ print "*************************************************************************
 process.GlobalTag = GlobalTag(process.GlobalTag, GT)
 
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
-setupEgammaPostRecoSeq(process,era='2017-Nov17ReReco')  
+setupEgammaPostRecoSeq(process,
+                       runVID=True,
+                       runEnergyCorrections=False, #no point in re-running them, they are already fine
+                       era='2016-Legacy')  #era is new to select between 2016 / 2017,  it defaults to 2017
 
 jetcorr_levels=[]
 jetcorr_levels_groomed=[]
@@ -732,7 +735,7 @@ jecLevelsAK8Puppi = []
 jecLevelsForMET = []
 
 if config["BUNCHSPACING"] == 25 and config["RUNONMC"] :
-   JECprefix = "Fall17_17Nov2017_V32"
+   JECprefix = "Summer16_07Aug2017_V11"
    jecAK8chsUncFile = "JEC/%s_MC_Uncertainty_AK8PFPuppi.txt"%(JECprefix)
    #jecAK4chsUncFile = "JEC/%s_MC_Uncertainty_AK4PFchs.txt"%(JECprefix)
    jecAK4chsUncFile = "JEC/%s_MC_Uncertainty_AK4PFPuppi.txt"%(JECprefix)
@@ -742,13 +745,15 @@ if config["BUNCHSPACING"] == 25 and config["RUNONMC"] :
 elif config["BUNCHSPACING"] == 25 and not(config["RUNONMC"]):
 
    JEC_runDependent_suffix= ""
-   if any("Run2017B" in s for s in  options.inputFiles): JEC_runDependent_suffix= "B"
-   elif any("Run2017C" in s for s in  options.inputFiles): JEC_runDependent_suffix= "C"
-   elif any("Run2017D" in s for s in  options.inputFiles): JEC_runDependent_suffix= "DE"
-   elif any("Run2017E" in s for s in  options.inputFiles): JEC_runDependent_suffix= "DE"
-   elif any("Run2017F" in s for s in  options.inputFiles): JEC_runDependent_suffix= "F"
+   if any("Run2016B" in s for s in  options.inputFiles): JEC_runDependent_suffix= "BCD"
+   elif any("Run2016C" in s for s in  options.inputFiles): JEC_runDependent_suffix= "BCD"
+   elif any("Run2016D" in s for s in  options.inputFiles): JEC_runDependent_suffix= "BCD"
+   elif any("Run2016E" in s for s in  options.inputFiles): JEC_runDependent_suffix= "EF"
+   elif any("Run2016F" in s for s in  options.inputFiles): JEC_runDependent_suffix= "EF"
+   elif any("Run2016G" in s for s in  options.inputFiles): JEC_runDependent_suffix= "GH"
+   elif any("Run2016H" in s for s in  options.inputFiles): JEC_runDependent_suffix= "GH"
   
-   JECprefix = "Fall17_17Nov2017"+JEC_runDependent_suffix+"_V32"
+   JECprefix = "Summer16_07Aug2017"+JEC_runDependent_suffix+"_V11"
    jecAK8chsUncFile = "JEC/%s_DATA_Uncertainty_AK8PFPuppi.txt"%(JECprefix)
    #jecAK4chsUncFile = "JEC/%s_DATA_Uncertainty_AK4PFchs.txt"%(JECprefix)
    jecAK4chsUncFile = "JEC/%s_DATA_Uncertainty_AK4PFPuppi.txt"%(JECprefix)
@@ -824,7 +829,7 @@ if config["CORRMETONTHEFLY"]:
 #                        src = cms.InputTag(jetsAK8)
 #                        )
 ######## JER ########
-JERprefix = "Fall17_V3"
+JERprefix = "Summer16_25nsV1"
 if config["RUNONMC"]:
   jerAK8chsFile_res = "JER/%s_MC_PtResolution_AK8PFchs.txt"%(JERprefix)
   jerAK4chsFile_res = "JER/%s_MC_PtResolution_AK4PFchs.txt"%(JERprefix)

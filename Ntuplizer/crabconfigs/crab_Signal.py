@@ -1,7 +1,7 @@
 from CRABClient.UserUtilities import config, getUsernameFromSiteDB
 config = config()
 
-config.General.requestName = 'Wgamma949Signal4000_%s'%"Aug20"
+config.General.requestName = 'Wgamma949Signal16_1000_5%s'%"Aug20"
 config.General.workArea = 'crab_jobs_signal%s'%"Aug20"
 config.General.transferOutputs = True
 config.General.transferLogs = True
@@ -10,14 +10,14 @@ config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'config_generic.py'
 
 config.JobType.sendExternalFolder = True
-config.Data.inputDataset = '/PythiaChargedResonance_WGToJJG_M4000_width5/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
+config.Data.inputDataset = '/MadGraphChargedResonance_WGToJJ_M1000_width5/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM'
 config.Data.inputDBS = 'global'
 config.Data.splitting = 'FileBased'
-config.Data.unitsPerJob = 10
+config.Data.unitsPerJob = 2
 
 config.Data.outLFNDirBase = '/store/user/%s/' % (getUsernameFromSiteDB())
 config.Data.publication = False
-config.Data.outputDatasetTag = 'Wgamma949Signal4000_%s'%"Aug20"
+config.Data.outputDatasetTag = 'Wgamma949Signal16_1000_5%s'%"Aug20"
 config.Site.storageSite = 'T3_US_Brown'
 
 
