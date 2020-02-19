@@ -12,7 +12,7 @@ config["RUNONReReco"] = True
 
 config["USEJSON"] = not (config["RUNONMC"])
 #config["JSONFILE"] = "JSON/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt"
-config["JSONFILE"] =  "JSON/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSONv1.txt"
+config["JSONFILE"] =  "JSON/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"
 config["BUNCHSPACING"] = 25
 config["USENOHF"] = False
 config["FILTEREVENTS"] = False

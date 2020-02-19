@@ -12,7 +12,7 @@ process.TFileService = cms.Service("TFileService",
                                    )
 
 #from VgammaTuplizer.Ntuplizer.ntuplizerOptions_data_cfi import config
-from VgammaTuplizer.Ntuplizer.ntuplizerOptions_generic_cfi import config
+from VgammaTuplizer.Ntuplizer.ntuplizerOptions_genericPrompt_cfi import config
 
 				   
 ####### Config parser ##########
@@ -26,7 +26,7 @@ options.maxEvents = -1
 #data file
 
 
-options.inputFiles = ('/store/data/Run2017D/SinglePhoton/MINIAOD/31Mar2018-v1/90000/FE0443CC-A337-E811-881E-0CC47A7C351E.root')
+options.inputFiles = ('/store/data/Run2018D/EGamma/MINIAOD/17Sep2018-v2/110000/42CBAC3D-7472-E54C-8424-B9A2BA3E10AE.root')
 
 #options.inputFiles = ('root://cmseos.fnal.gov//store/user/jhakala/WGamma_M1600_W0.05_v2/WGamma-M1600_W0.05_miniAOD_0.root')
 
@@ -84,9 +84,9 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 from Configuration.AlCa.GlobalTag import GlobalTag
 
 GT = ''
-if config["RUNONMC"]: GT = '94X_mc2017_realistic_v14'
-elif config["RUNONReReco"]: GT = '94X_dataRun2_v6'
-elif config["RUNONPromptReco"]: GT = '92X_dataRun2_2017Prompt_v11'
+if config["RUNONMC"]: GT = '102X_upgrade2018_realistic_v20'
+elif config["RUNONReReco"]: GT = '102X_dataRun2_v12'
+elif config["RUNONPromptReco"]: GT = '102X_dataRun2_Prompt_v15'
 
 print "*************************************** GLOBAL TAG *************************************************" 
 print GT
@@ -94,7 +94,7 @@ print "*************************************************************************
 process.GlobalTag = GlobalTag(process.GlobalTag, GT)
 
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
-setupEgammaPostRecoSeq(process,era='2017-Nov17ReReco')  
+setupEgammaPostRecoSeq(process,era='2018-Prompt')
 
 jetcorr_levels=[]
 jetcorr_levels_groomed=[]
@@ -732,7 +732,7 @@ jecLevelsAK8Puppi = []
 jecLevelsForMET = []
 
 if config["BUNCHSPACING"] == 25 and config["RUNONMC"] :
-   JECprefix = "Fall17_17Nov2017_V32"
+   JECprefix = "Autumn18_V19"
    jecAK8chsUncFile = "JEC/%s_MC_Uncertainty_AK8PFPuppi.txt"%(JECprefix)
    #jecAK4chsUncFile = "JEC/%s_MC_Uncertainty_AK4PFchs.txt"%(JECprefix)
    jecAK4chsUncFile = "JEC/%s_MC_Uncertainty_AK4PFPuppi.txt"%(JECprefix)
@@ -742,13 +742,12 @@ if config["BUNCHSPACING"] == 25 and config["RUNONMC"] :
 elif config["BUNCHSPACING"] == 25 and not(config["RUNONMC"]):
 
    JEC_runDependent_suffix= ""
-   if any("Run2017B" in s for s in  options.inputFiles): JEC_runDependent_suffix= "B"
-   elif any("Run2017C" in s for s in  options.inputFiles): JEC_runDependent_suffix= "C"
-   elif any("Run2017D" in s for s in  options.inputFiles): JEC_runDependent_suffix= "DE"
-   elif any("Run2017E" in s for s in  options.inputFiles): JEC_runDependent_suffix= "DE"
-   elif any("Run2017F" in s for s in  options.inputFiles): JEC_runDependent_suffix= "F"
+   if any("Run2018A" in s for s in  options.inputFiles): JEC_runDependent_suffix= "A"
+   elif any("Run2018B" in s for s in  options.inputFiles): JEC_runDependent_suffix= "B"
+   elif any("Run2018C" in s for s in  options.inputFiles): JEC_runDependent_suffix= "C"
+   elif any("Run2018D" in s for s in  options.inputFiles): JEC_runDependent_suffix= "D"
   
-   JECprefix = "Fall17_17Nov2017"+JEC_runDependent_suffix+"_V32"
+   JECprefix = "Autumn18_Run"+JEC_runDependent_suffix+"_V19"
    jecAK8chsUncFile = "JEC/%s_DATA_Uncertainty_AK8PFPuppi.txt"%(JECprefix)
    #jecAK4chsUncFile = "JEC/%s_DATA_Uncertainty_AK4PFchs.txt"%(JECprefix)
    jecAK4chsUncFile = "JEC/%s_DATA_Uncertainty_AK4PFPuppi.txt"%(JECprefix)
@@ -772,7 +771,7 @@ if config["CORRJETSONTHEFLY"]:
      	 'JEC/%s_MC_L3Absolute_AK8PFPuppi.txt'%(JECprefix)
        ]
      jecLevelsAK4chs = [
-     	 #'JEC/%s_MC_L1FastJet_AK4PFPuppi.txt'%(JECprefix),
+     	 'JEC/%s_MC_L1FastJet_AK4PFPuppi.txt'%(JECprefix),
      	 'JEC/%s_MC_L2Relative_AK4PFPuppi.txt'%(JECprefix),
      	 'JEC/%s_MC_L3Absolute_AK4PFPuppi.txt'%(JECprefix)
        ]
@@ -824,7 +823,7 @@ if config["CORRMETONTHEFLY"]:
 #                        src = cms.InputTag(jetsAK8)
 #                        )
 ######## JER ########
-JERprefix = "Fall17_V3"
+JERprefix = "Autumn18_V7b"
 if config["RUNONMC"]:
   jerAK8chsFile_res = "JER/%s_MC_PtResolution_AK8PFchs.txt"%(JERprefix)
   jerAK4chsFile_res = "JER/%s_MC_PtResolution_AK4PFchs.txt"%(JERprefix)
