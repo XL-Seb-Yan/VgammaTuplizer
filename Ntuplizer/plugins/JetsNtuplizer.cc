@@ -535,11 +535,11 @@ void JetsNtuplizer::fillBranches( edm::Event const & event, const edm::EventSetu
       bool IDTight = tightJetID(fj);
 
       nBranches_->jetAK8_N++;	       
-      nBranches_->jetAK8_pt     	    .push_back(corr*uncorrJet.pt());                   
+      nBranches_->jetAK8_pt     	    .push_back(uncorrJet.pt());                   
       nBranches_->jetAK8_eta    	    .push_back(fj.eta());
-      nBranches_->jetAK8_mass   	    .push_back(corr*uncorrJet.mass());
+      nBranches_->jetAK8_mass   	    .push_back(uncorrJet.mass());
       nBranches_->jetAK8_phi    	    .push_back(fj.phi());
-      nBranches_->jetAK8_e      	    .push_back(corr*uncorrJet.energy());
+      nBranches_->jetAK8_e      	    .push_back(uncorrJet.energy());
       nBranches_->jetAK8_jec    	    .push_back(corr);
       nBranches_->jetAK8_jecUp    	    .push_back(corrUp);
       nBranches_->jetAK8_jecDown    	    .push_back(corrDown);
@@ -581,6 +581,20 @@ void JetsNtuplizer::fillBranches( edm::Event const & event, const edm::EventSetu
       nBranches_->jetAK8_chs_tau3	          .push_back(fj.userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau3")); 
       nBranches_->jetAK8_chs_pruned_mass    .push_back(fj.userFloat("ak8PFJetsCHSValueMap:ak8PFJetsCHSPrunedMass"));
       nBranches_->jetAK8_chs_softdrop_mass  .push_back(fj.userFloat("ak8PFJetsCHSValueMap:ak8PFJetsCHSSoftDropMass"));
+	  
+	  JME::JetParameters parameters_ak8;
+	  parameters_ak8.setJetPt(corr*uncorrJet.pt());
+	  parameters_ak8.setJetEta(fj.eta());
+	  parameters_ak8.setRho(nBranches_->rho);
+      
+	  float jer_res= resolution_ak8.getResolution(parameters_ak8);
+	  float jer_sf = resolution_ak8_sf.getScaleFactor(parameters_ak8);
+	  float jer_sf_up = resolution_ak8_sf.getScaleFactor(parameters_ak8, Variation::UP);
+	  float jer_sf_down = resolution_ak8_sf.getScaleFactor(parameters_ak8, Variation::DOWN);
+	  nBranches_->jetAK8_jer_sf.push_back(jer_sf);
+	  nBranches_->jetAK8_jer_sf_up.push_back(jer_sf_up);
+	  nBranches_->jetAK8_jer_sf_down.push_back(jer_sf_down);
+	  nBranches_->jetAK8_jer_sigma_pt.push_back(jer_res);
       
       vPuppiSoftDropSubjetpt.clear();
       vPuppiSoftDropSubjeteta.clear();
@@ -650,20 +664,6 @@ void JetsNtuplizer::fillBranches( edm::Event const & event, const edm::EventSetu
         nBranches_->jetAK8_genParton_pdgID.push_back(genP_pdgId_fj); //Physics definition! see https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2015#MC_Truth
         nBranches_->jetAK8_nbHadrons      .push_back((fj.jetFlavourInfo().getbHadrons()).size());
         nBranches_->jetAK8_ncHadrons      .push_back((fj.jetFlavourInfo().getcHadrons()).size());
-
-	JME::JetParameters parameters_ak8;
-	parameters_ak8.setJetPt(corr*uncorrJet.pt());
-	parameters_ak8.setJetEta(fj.eta());
-	parameters_ak8.setRho(nBranches_->rho);
-      
-	float jer_res= resolution_ak8.getResolution(parameters_ak8);
-	float jer_sf = resolution_ak8_sf.getScaleFactor(parameters_ak8);
-	float jer_sf_up = resolution_ak8_sf.getScaleFactor(parameters_ak8, Variation::UP);
-	float jer_sf_down = resolution_ak8_sf.getScaleFactor(parameters_ak8, Variation::DOWN);
-	nBranches_->jetAK8_jer_sf.push_back(jer_sf);
-	nBranches_->jetAK8_jer_sf_up.push_back(jer_sf_up);
-	nBranches_->jetAK8_jer_sf_down.push_back(jer_sf_down);
-	nBranches_->jetAK8_jer_sigma_pt.push_back(jer_res);
 	
       }
       TLorentzVector FatJet; FatJet.SetPtEtaPhiE( fj.pt(), fj.eta(), fj.phi(), fj.energy() );  
@@ -807,16 +807,6 @@ void JetsNtuplizer::fillBranches( edm::Event const & event, const edm::EventSetu
 	    nBranches_->jetAK8_softdrop_massCorr.push_back(-99.);
 	    nBranches_->jetAK8_softdrop_jec.push_back(-99.);
 	  }
-	  
-	  jecAK8Unc_->setJetEta( softdropjet.correctedP4(0).eta() );
-	  jecAK8Unc_->setJetPt( softdropcorr * softdropjet.correctedP4(0).pt() );
-	  softdropcorrUp = softdropcorr * (1 + fabs(jecAK8Unc_->getUncertainty(1)));
-	  jecAK8Unc_->setJetEta( softdropjet.correctedP4(0).eta() );
-	  jecAK8Unc_->setJetPt( softdropcorr * softdropjet.correctedP4(0).pt() );
-	  softdropcorrDown = softdropcorr * ( 1 - fabs(jecAK8Unc_->getUncertainty(-1)) );
-	  
-	  nBranches_->jetAK8_softdrop_jecUp.push_back(softdropcorrUp);
-	  nBranches_->jetAK8_softdrop_jecDown.push_back(softdropcorrDown);
 	  
 	  jecAK8Unc_->setJetEta( softdropjet.correctedP4(0).eta() );
 	  jecAK8Unc_->setJetPt( softdropcorr * softdropjet.correctedP4(0).pt() );

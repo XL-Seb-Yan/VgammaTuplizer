@@ -8,11 +8,11 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
 
 process.TFileService = cms.Service("TFileService",
-                                    fileName = cms.string('flatTuple.root')
+                                    fileName = cms.string('flatTuple_SFstudy.root')
                                    )
 
 #from VgammaTuplizer.Ntuplizer.ntuplizerOptions_data_cfi import config
-from VgammaTuplizer.Ntuplizer.ntuplizerOptions_generic_cfi import config
+from VgammaTuplizer.Ntuplizer.ntuplizerOptions_genericMC_cfi import config
 
 				   
 ####### Config parser ##########
@@ -26,7 +26,7 @@ options.maxEvents = -1
 #data file
 
 
-options.inputFiles = ('51E.root')
+options.inputFiles = ('/store/mc/RunIIFall17MiniAODv2/MadGraphChargedResonance_WGToJJG_M700_width0p01/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/120000/CCD5D230-385F-E911-82BF-0242AC130002.root')
 
 #options.inputFiles = ('root://cmseos.fnal.gov//store/user/jhakala/WGamma_M1600_W0.05_v2/WGamma-M1600_W0.05_miniAOD_0.root')
 

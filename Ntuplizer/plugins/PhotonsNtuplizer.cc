@@ -105,6 +105,8 @@ void PhotonsNtuplizer::fillBranches( edm::Event const & event, const edm::EventS
 
     /*======= Energy Scale and smearing ==========*/
     nBranches_->ph_energyscale.push_back(pho->userFloat("energyScaleValue"));
+	nBranches_->ph_energyscale_up.push_back(pho->userFloat("energyScaleUp"));
+	nBranches_->ph_energyscale_down.push_back(pho->userFloat("energyScaleDown"));
     nBranches_->ph_resolution.push_back(pho->userFloat("energySigmaValue"));
 
     /*======= ISO ==========*/

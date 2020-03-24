@@ -93,6 +93,8 @@ void NtupleBranches::branch( std::map< std::string, bool >& runFlags ){
     tree_->Branch( "ph_mvaCat"                                         , &ph_mvaCategory                                );
     tree_->Branch( "ph_Corr"                                           , &ph_Corr                                       );
     tree_->Branch( "ph_energyscale"                                    , &ph_energyscale                                );
+	tree_->Branch( "ph_energyscale_up"                                 , &ph_energyscale_up                             );
+	tree_->Branch( "ph_energyscale_down"                               , &ph_energyscale_down                           );
     tree_->Branch( "ph_resolution"                                     , &ph_resolution                                 );
 
   } ////doPhotons
@@ -517,12 +519,6 @@ void NtupleBranches::branch( std::map< std::string, bool >& runFlags ){
       tree_->Branch( "jetAK8_genParton_pdgID" , &jetAK8_genParton_pdgID);
       tree_->Branch( "jetAK8_nbHadrons"       , &jetAK8_nbHadrons);
       tree_->Branch( "jetAK8_ncHadrons"       , &jetAK8_ncHadrons);
-
-      tree_->Branch( "jetAK8_jer_sf"          , &jetAK8_jer_sf);
-      tree_->Branch( "jetAK8_jer_sf_up"          , &jetAK8_jer_sf_up);
-      tree_->Branch( "jetAK8_jer_sf_down"          , &jetAK8_jer_sf_down);
-      tree_->Branch( "jetAK8_jer_sigma_pt"          , &jetAK8_jer_sigma_pt);
-
       
     }
     if (runFlags["doHbbTag"]) {
@@ -551,6 +547,10 @@ void NtupleBranches::branch( std::map< std::string, bool >& runFlags ){
     tree_->Branch( "jetAK8_softdrop_jec"     , &jetAK8_softdrop_jec      );
     tree_->Branch( "jetAK8_softdrop_jecUp"   , &jetAK8_softdrop_jecUp      );
     tree_->Branch( "jetAK8_softdrop_jecDown" , &jetAK8_softdrop_jecDown    );
+	tree_->Branch( "jetAK8_jer_sf"          , &jetAK8_jer_sf);
+    tree_->Branch( "jetAK8_jer_sf_up"          , &jetAK8_jer_sf_up);
+    tree_->Branch( "jetAK8_jer_sf_down"          , &jetAK8_jer_sf_down);
+    tree_->Branch( "jetAK8_jer_sigma_pt"          , &jetAK8_jer_sigma_pt);
 
     if (runFlags["doTrimming"]) {
       /*----------------------AK10 trimming ---------------------------*/   
@@ -794,6 +794,11 @@ void NtupleBranches::reset( void ){
   ph_isoGamma.clear();    
   ph_isoCh.clear();    
   ph_passEleVeto.clear();    
+  ph_Corr.clear();
+  ph_energyscale.clear();
+  ph_energyscale_up.clear();
+  ph_energyscale_down.clear();
+  ph_resolution.clear();
   //ph_fixedGridRho.clear();
     
   /** electrons */

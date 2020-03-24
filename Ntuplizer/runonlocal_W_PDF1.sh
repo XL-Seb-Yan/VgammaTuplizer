@@ -1,11 +1,14 @@
 #!/bin/bash
-mass=3500
-mkdir ${mass}
-for ((i=0; i<60;i++))
+for mass in {1200,3500}
 do
-    name="'root://cmseos.fnal.gov//store/user/jhakala/WGamma_M3500_W0.05_v2/WGamma-M3500_W0.05_miniAOD_${i}.root'"
-    echo $name
-    cat > ${mass}/${i}.py <<EOF
+    PDF=1
+	width=5
+	mkdir ${mass}_${width}_${PDF}
+	for ((i=0; i<20;i++))
+	do
+		name="'root://cmseos.fnal.gov//store/user/xuyan/PDFUnc/MadgraphChargedResonance_M${mass}_width${width}_PDF${PDF}_TuneCP5_13TeV_pythia8_GEN-SIM-PREMIX-RECOAOD-MINIAOD_${i}.root'"
+		echo $name
+		cat > ${mass}_${width}_${PDF}/${i}.py <<EOF
 ###### Process initialization ##########
 import sys
 import FWCore.ParameterSet.Config as cms
@@ -16,11 +19,11 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
 
 process.TFileService = cms.Service("TFileService",
-                                    fileName = cms.string('flat_${mass}_${i}.root')
+                                    fileName = cms.string('flatTuple_${mass}_${width}_${PDF}_${i}.root')
                                    )
 
 #from VgammaTuplizer.Ntuplizer.ntuplizerOptions_data_cfi import config
-from VgammaTuplizer.Ntuplizer.ntuplizerOptions_generic_cfi import config
+from VgammaTuplizer.Ntuplizer.ntuplizerOptions_genericMC_cfi import config
 
 				   
 ####### Config parser ##########
@@ -34,10 +37,7 @@ options.maxEvents = -1
 #data file
 
 
-#options.inputFiles = ('/store/data/Run2017F/SinglePhoton/MINIAOD/31Mar2018-v1/80000/24EE7C33-1039-E811-98A4-1CB72C1B6C32.root')
-
 options.inputFiles = (${name})
-
                      
 options.parseArguments()
 
@@ -101,6 +101,8 @@ print GT
 print "****************************************************************************************************" 
 process.GlobalTag = GlobalTag(process.GlobalTag, GT)
 
+from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+setupEgammaPostRecoSeq(process,era='2017-Nov17ReReco')  
 
 jetcorr_levels=[]
 jetcorr_levels_groomed=[]
@@ -644,38 +646,6 @@ from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 
 dataFormat=DataFormat.MiniAOD
 
-switchOnVIDElectronIdProducer(process,dataFormat,task=pattask)
-
-process.egmGsfElectronIDSequence = cms.Sequence(process.egmGsfElectronIDs)
-
-# define which IDs we want to produce
-#my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_PHYS14_PU20bx25_V2_cff',
-#		 'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV51_cff']
-#my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV51_cff',
-#                 'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff',
-#                 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff']
-      
-my_id_modules = [
-                 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V1_cff',
-                 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronHLTPreselecition_Summer16_V1_cff',
-                 'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV70_cff',
-                 'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_noIso_V1_cff',
-                 ]
-           
-
-#add them to the VID producer
-for idmod in my_id_modules:
-    setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection,task=pattask)
-
-switchOnVIDPhotonIdProducer(process,dataFormat)
-process.egmPhotonIDSequence = cms.Sequence(process.egmPhotonIDSequence)
-
-my_id_modules_ph = ['RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Fall17_94X_V2_cff',
-                    'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Fall17_94X_V2_cff']
-
-for idmod in my_id_modules_ph:
-    setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection,task=pattask)
-
 ####### Event filters ###########
 
 ##___________________________HCAL_Noise_Filter________________________________||
@@ -862,15 +832,25 @@ if config["CORRMETONTHEFLY"]:
 #                        src = cms.InputTag(jetsAK8)
 #                        )
 ######## JER ########
-JERprefix = "Spring16_25nsV6"
-jerAK8chsFile_res = "JER/%s_MC_PtResolution_AK8PFchs.txt"%(JERprefix)
-jerAK4chsFile_res = "JER/%s_MC_PtResolution_AK4PFchs.txt"%(JERprefix)
-jerAK8PuppiFile_res = "JER/%s_MC_PtResolution_AK8PFPuppi.txt"%(JERprefix)
-jerAK4PuppiFile_res = "JER/%s_MC_PtResolution_AK4PFPuppi.txt"%(JERprefix)
-jerAK8chsFile_sf = "JER/%s_MC_SF_AK8PFchs.txt"%(JERprefix)
-jerAK4chsFile_sf = "JER/%s_MC_SF_AK4PFchs.txt"%(JERprefix)
-jerAK8PuppiFile_sf = "JER/%s_MC_SF_AK8PFPuppi.txt"%(JERprefix)
-jerAK4PuppiFile_sf = "JER/%s_MC_SF_AK4PFPuppi.txt"%(JERprefix)
+JERprefix = "Fall17_V3"
+if config["RUNONMC"]:
+  jerAK8chsFile_res = "JER/%s_MC_PtResolution_AK8PFchs.txt"%(JERprefix)
+  jerAK4chsFile_res = "JER/%s_MC_PtResolution_AK4PFchs.txt"%(JERprefix)
+  jerAK8PuppiFile_res = "JER/%s_MC_PtResolution_AK8PFPuppi.txt"%(JERprefix)
+  jerAK4PuppiFile_res = "JER/%s_MC_PtResolution_AK4PFPuppi.txt"%(JERprefix)
+  jerAK8chsFile_sf = "JER/%s_MC_SF_AK8PFchs.txt"%(JERprefix)
+  jerAK4chsFile_sf = "JER/%s_MC_SF_AK4PFchs.txt"%(JERprefix)
+  jerAK8PuppiFile_sf = "JER/%s_MC_SF_AK8PFPuppi.txt"%(JERprefix)
+  jerAK4PuppiFile_sf = "JER/%s_MC_SF_AK4PFPuppi.txt"%(JERprefix)
+else:
+  jerAK8chsFile_res = "JER/%s_DATA_PtResolution_AK8PFchs.txt"%(JERprefix)
+  jerAK4chsFile_res = "JER/%s_DATA_PtResolution_AK4PFchs.txt"%(JERprefix)
+  jerAK8PuppiFile_res = "JER/%s_DATA_PtResolution_AK8PFPuppi.txt"%(JERprefix)
+  jerAK4PuppiFile_res = "JER/%s_DATA_PtResolution_AK4PFPuppi.txt"%(JERprefix)
+  jerAK8chsFile_sf = "JER/%s_DATA_SF_AK8PFchs.txt"%(JERprefix)
+  jerAK4chsFile_sf = "JER/%s_DATA_SF_AK4PFchs.txt"%(JERprefix)
+  jerAK8PuppiFile_sf = "JER/%s_DATA_SF_AK8PFPuppi.txt"%(JERprefix)
+  jerAK4PuppiFile_sf = "JER/%s_DATA_SF_AK4PFPuppi.txt"%(JERprefix)
 
 print ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 print ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
@@ -909,11 +889,11 @@ process.ntuplizer = cms.EDAnalyzer("Ntuplizer",
     muons = cms.InputTag("slimmedMuons"),
     photons = cms.InputTag("slimmedPhotons"),
     phoIdVerbose = cms.bool(False),
-    phoLooseIdMap  = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V2-loose"),
-    phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V2-medium"),
-    phoTightIdMap  = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V2-tight"),
-    phoMvaValuesMap = cms.InputTag("photonMVAValueMapProducer:PhotonMVAEstimatorRunIIFall17v2Values"),
-    phoMvaCategoriesMap = cms.InputTag("photonMVAValueMapProducer:PhotonMVAEstimatorRunIIFall17v2Categories"),
+    #phoLooseIdMap  = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V2-loose"),
+    #phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V2-medium"),
+    #phoTightIdMap  = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V2-tight"),
+    #phoMvaValuesMap = cms.InputTag("photonMVAValueMapProducer:PhotonMVAEstimatorRunIIFall17v2Values"),
+    #phoMvaCategoriesMap = cms.InputTag("photonMVAValueMapProducer:PhotonMVAEstimatorRunIIFall17v2Categories"),
     electrons = cms.InputTag("slimmedElectrons"),
     ebRecHits = cms.InputTag("reducedEgamma","reducedEBRecHits"),
 
@@ -924,18 +904,18 @@ process.ntuplizer = cms.EDAnalyzer("Ntuplizer",
 #    eleMediumIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-medium"),
 #    eleTightIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-tight"),
 
-    eleVetoIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-veto"),
-    eleLooseIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-loose"),
-    eleMediumIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-medium"),
-    eleTightIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-tight"),
+    #eleVetoIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-veto"),
+    #eleLooseIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-loose"),
+    #eleMediumIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-medium"),
+    #eleTightIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-tight"),
 
-    eleHLTIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronHLTPreselection-Summer16-V1"), 
-    eleHEEPIdMap = cms.InputTag("egmGsfElectronIDs:heepElectronID-HEEPV70"),
+    #eleHLTIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronHLTPreselection-Summer16-V1"), 
+    #eleHEEPIdMap = cms.InputTag("egmGsfElectronIDs:heepElectronID-HEEPV70"),
                                    
-    eleMVAMediumIdMap = cms.InputTag("egmGsfElectronIDs:mvaEleID-Fall17-noIso-V1-wp90"),
-    eleMVATightIdMap  = cms.InputTag("egmGsfElectronIDs:mvaEleID-Fall17-noIso-V1-wp80"),
-    mvaValuesMap     = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
-    mvaCategoriesMap = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Categories"),
+    #eleMVAMediumIdMap = cms.InputTag("egmGsfElectronIDs:mvaEleID-Fall17-noIso-V1-wp90"),
+    #eleMVATightIdMap  = cms.InputTag("egmGsfElectronIDs:mvaEleID-Fall17-noIso-V1-wp80"),
+    #mvaValuesMap     = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
+    #mvaCategoriesMap = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Categories"),
     dupCluster          = cms.InputTag("particleFlowEGammaGSFixed:dupECALClusters"),
     hitsNotReplaced     = cms.InputTag("ecalMultiAndGSGlobalRecHitEB:hitsNotReplaced"),
     taus = cms.InputTag(TAUS),
@@ -1491,6 +1471,7 @@ if  config["DOMULTIPLETAUMVAVERSIONS"]:
 
 ####### Final path ##########
 process.p = cms.Path()
+process.p += process.egammaPostRecoSeq
 if config["DOHLTFILTERS"]:
  process.p += process.HBHENoiseFilterResultProducer
  process.p += process.BadChargedCandidateSequence
@@ -1503,7 +1484,7 @@ if config["DOMULTIPLETAUMVAVERSIONS"]:
   process.p += process.rerunMvaIsolation2SeqRun2_2_newDM
 
 process.p += getattr(process, "NewTauIDsEmbedded")
-process.p += process.egmPhotonIDSequence
+#process.p += process.egmPhotonIDSequence
 # For new MVA ID END!
 
 process.p += process.ntuplizer
@@ -1512,10 +1493,9 @@ process.p.associate(pattask)
 print pattask
 
 #  LocalWords:  tauIdMVAIsoDBoldDMwLT
-
-
 EOF
 
-    cmsRun ${mass}/${i}.py
-    
+		cmsRun ${mass}_${width}_${PDF}/${i}.py
+		
+	done
 done

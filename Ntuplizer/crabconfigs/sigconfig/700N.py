@@ -1,8 +1,8 @@
 from CRABClient.UserUtilities import config, getUsernameFromSiteDB
 config = config()
 
-config.General.requestName = 'Wgamma949Signal17_700_0p01%s'%"Jan16"
-config.General.workArea = 'crab_jobs_signal%s'%"Jan16"
+config.General.requestName = 'Wgamma949Signal17_700_0p01%s'%"Mar1"
+config.General.workArea = 'crab_jobs_signal%s'%"Mar1"
 config.General.transferOutputs = True
 config.General.transferLogs = True
 
@@ -18,6 +18,6 @@ config.Data.unitsPerJob = 5
 
 config.Data.outLFNDirBase = '/store/user/%s/' % (getUsernameFromSiteDB())
 config.Data.publication = False
-config.Data.outputDatasetTag = 'Wgamma949Signal17_700_0p01%s'%"Jan16"
+config.Data.outputDatasetTag = 'Wgamma949Signal17_700_0p01%s'%"Mar1"
 config.Site.storageSite = 'T3_US_Brown'
           

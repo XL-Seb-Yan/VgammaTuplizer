@@ -222,6 +222,7 @@ bool TriggersNtuplizer::findTrigger( std::string trigName ){
      trigName.find( "HLT_Photon120_v"                                ) != std::string::npos ||
      trigName.find( "HLT_Photon120_R9Id90_HE10_IsoM"                 ) != std::string::npos ||
      trigName.find( "HLT_Photon150_v"                                ) != std::string::npos ||
+	 trigName.find( "HLT_Photon165_HE10"                             ) != std::string::npos ||
      trigName.find( "HLT_Photon165_R9Id90_HE10_IsoM"                 ) != std::string::npos ||
      trigName.find( "HLT_Photon175_v"                                ) != std::string::npos ||
      trigName.find( "HLT_Photon200_v"                                ) != std::string::npos ||

@@ -8,7 +8,7 @@ config.General.transferLogs = True
 
 config.JobType.allowUndistributedCMSSW = True
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'config_generic.py'
+config.JobType.psetName = 'config_genericMC.py'
 
 config.JobType.sendExternalFolder = True
 config.Data.inputDataset = '/GJets_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'
