@@ -89,7 +89,7 @@ public:
   float                           genFacRenWeightUp    ;
   float                           genFacRenWeightDown  ;
   float                           qScale               ;
-  float                           PDF_rms              ;
+  std::vector<float>              PDF_weight           ;
   std::vector<int  >              PDF_id               ;
   std::vector<float>              PDF_x                ;
   std::vector<float>              PDF_xPDF             ;

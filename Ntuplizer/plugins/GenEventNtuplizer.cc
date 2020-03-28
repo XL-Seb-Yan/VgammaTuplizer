@@ -98,18 +98,18 @@ void GenEventNtuplizer::fillBranches( edm::Event const & event, const edm::Event
         weightFacRenDown = Product->weights()[8].wgt / Product->originalXWGTUP();
     }    
     std::vector<double> pdfWeights;
-    for(unsigned int i = 10; i <= 110 && i < Product->weights().size(); i++) {
-        pdfWeights.push_back(Product->weights()[i].wgt / Product->originalXWGTUP());
+    for(unsigned int i = 10; i <= 882 && i < Product->weights().size(); i++) {
+        nBranches_->PDF_weight.push_back(Product->weights()[i].wgt / Product->originalXWGTUP());
     }
     
     // Calculate RMS
-    if(pdfWeights.size() > 0) {
-        double sum = std::accumulate(pdfWeights.begin(), pdfWeights.end(), 0.0);
-        double mean = sum / pdfWeights.size();
+    // if(pdfWeights.size() > 0) {
+        // double sum = std::accumulate(pdfWeights.begin(), pdfWeights.end(), 0.0);
+        // double mean = sum / pdfWeights.size();
 
-        double sq_sum = std::inner_product(pdfWeights.begin(), pdfWeights.end(), pdfWeights.begin(), 0.0);
-        pdfRMS = std::sqrt(sq_sum / pdfWeights.size() - mean * mean);
-    }
+        // double sq_sum = std::inner_product(pdfWeights.begin(), pdfWeights.end(), pdfWeights.begin(), 0.0);
+        // pdfRMS = std::sqrt(sq_sum / pdfWeights.size() - mean * mean);
+    // }
   }
 
 
@@ -137,6 +137,5 @@ void GenEventNtuplizer::fillBranches( edm::Event const & event, const edm::Event
   nBranches_->genRenWeightDown = weightRenDown;
   nBranches_->genFacRenWeightUp = weightFacRenUp;
   nBranches_->genFacRenWeightDown = weightFacRenDown;
-  nBranches_->PDF_rms = 1. + pdfRMS;
 
 }

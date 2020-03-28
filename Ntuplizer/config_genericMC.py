@@ -8,7 +8,7 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
 
 process.TFileService = cms.Service("TFileService",
-                                    fileName = cms.string('flatTuple_SFstudy.root')
+                                    fileName = cms.string('flatTuple_700W.root')
                                    )
 
 #from VgammaTuplizer.Ntuplizer.ntuplizerOptions_data_cfi import config
@@ -26,7 +26,8 @@ options.maxEvents = -1
 #data file
 
 
-options.inputFiles = ('/store/mc/RunIIFall17MiniAODv2/MadGraphChargedResonance_WGToJJG_M700_width0p01/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/120000/CCD5D230-385F-E911-82BF-0242AC130002.root')
+options.inputFiles = ('/store/mc/RunIIFall17MiniAODv2/MadGraphChargedResonance_WGToJJG_M700_width5/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/270000/C2D581BA-4D61-E911-9B8B-0CC47AB64E80.root',
+'/store/mc/RunIIFall17MiniAODv2/MadGraphChargedResonance_WGToJJG_M700_width5/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/270000/86BCC6FB-9664-E911-8857-AC1F6B1AEFC6.root','/store/mc/RunIIFall17MiniAODv2/MadGraphChargedResonance_WGToJJG_M700_width5/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/270000/4E3068EC-9664-E911-8DB6-A4BF0112BCCA.root','/store/mc/RunIIFall17MiniAODv2/MadGraphChargedResonance_WGToJJG_M700_width5/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/270000/16FAA9BB-4261-E911-BF1A-008CFAC93B20.root')
 
 #options.inputFiles = ('root://cmseos.fnal.gov//store/user/jhakala/WGamma_M1600_W0.05_v2/WGamma-M1600_W0.05_miniAOD_0.root')
 

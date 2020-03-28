@@ -1,14 +1,13 @@
 #!/bin/bash
-for mass in {3500,p}
+for mass in {700,1200,2000,2800,3500}
 do
-    PDF=1
-	width=0p01
-	mkdir ${mass}_${width}_${PDF}
+	width=5
+	mkdir ${mass}_${width}
 	for ((i=0; i<20;i++))
 	do
-		name="'root://cmseos.fnal.gov//store/user/xuyan/PDFUnc/MadgraphChargedResonance_M${mass}_width${width}_PDF${PDF}_TuneCP5_13TeV_pythia8_GEN-SIM-PREMIX-RECOAOD-MINIAOD_${i}.root'"
+		name="'root://cmseos.fnal.gov//store/user/xuyan/ChargedVectorResonanceCw_WGToJJG_width${width}_TuneCP5_13TeV_pythia8/ChargedVectorResonanceCw_WGToJJG_M${mass}_width${width}_TuneCP5_13TeV_pythia8_GEN-SIM-PREMIX-RECOAOD-MINIAOD_${i}.root'"
 		echo $name
-		cat > ${mass}_${width}_${PDF}/${i}.py <<EOF
+		cat > ${mass}_${width}/${i}.py <<EOF
 ###### Process initialization ##########
 import sys
 import FWCore.ParameterSet.Config as cms
@@ -19,7 +18,7 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
 
 process.TFileService = cms.Service("TFileService",
-                                    fileName = cms.string('flatTuple_${mass}_${width}_${PDF}_${i}.root')
+                                    fileName = cms.string('flatTuple_${mass}_${width}_${i}.root')
                                    )
 
 #from VgammaTuplizer.Ntuplizer.ntuplizerOptions_data_cfi import config
@@ -84,7 +83,7 @@ process.MessageLogger.cerr.INFO = cms.untracked.PSet(
     limit = cms.untracked.int32(1)
 )
 
-process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+process.MessageLogger.cerr.FwkReport.reportEvery = 10
 
 ####### Define conditions ##########
 #process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
@@ -1495,7 +1494,7 @@ print pattask
 #  LocalWords:  tauIdMVAIsoDBoldDMwLT
 EOF
 
-		cmsRun ${mass}_${width}_${PDF}/${i}.py
+		cmsRun ${mass}_${width}/${i}.py
 		
 	done
 done
