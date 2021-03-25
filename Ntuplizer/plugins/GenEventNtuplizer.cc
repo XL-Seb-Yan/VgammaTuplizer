@@ -97,8 +97,9 @@ void GenEventNtuplizer::fillBranches( edm::Event const & event, const edm::Event
         weightFacRenUp = Product->weights()[4].wgt / Product->originalXWGTUP();
         weightFacRenDown = Product->weights()[8].wgt / Product->originalXWGTUP();
     }    
-    std::vector<double> pdfWeights;
-    for(unsigned int i = 10; i <= 882 && i < Product->weights().size(); i++) {
+    
+    // See here: https://twiki.cern.ch/twiki/bin/view/CMS/HowToPDF#How_to_retrieve_LHE_weight_value
+    for(unsigned int i = 9; i <= 111 && i < Product->weights().size(); i++) {
         nBranches_->PDF_weight.push_back(Product->weights()[i].wgt / Product->originalXWGTUP());
     }
     
